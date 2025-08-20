@@ -1,0 +1,877 @@
+openapi: 3.0.0
+info:
+    title: Eklaim API
+    description: API untuk sistem Eklaim iDRG dan INACBG
+    version: 1.0.0
+
+tags:
+    - name: iDRG
+      description: iDRG operations
+    - name: INACBG
+      description: INACBG operations
+    - name: Claim
+      description: Claim operations
+
+components:
+    securitySchemes:
+        JWT:
+            type: apiKey
+            in: header
+            name: Authorization
+
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                error:
+                    type: string
+                message:
+                    type: string
+
+        SuccessResponse:
+            type: object
+            properties:
+                status:
+                    type: string
+                    example: 'success'
+                data:
+                    type: object
+
+        ClaimData:
+            type: object
+            properties:
+                nomor_sep:
+                    type: string
+                    example: '0301R0011023V000001'
+                data:
+                    type: object
+
+        DiagnosaData:
+            type: object
+            properties:
+                diagnosa_primer:
+                    type: string
+                    example: 'A01.0'
+                diagnosa_sekunder:
+                    type: array
+                    items:
+                        type: string
+                    example: ['B02.1', 'C03.2']
+
+        ProcedureData:
+            type: object
+            properties:
+                procedure_primer:
+                    type: string
+                    example: '00.01'
+                procedure_sekunder:
+                    type: array
+                    items:
+                        type: string
+                    example: ['00.02', '00.03']
+
+paths:
+    /new-claim:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Create new claim
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: new_claim
+                                data:
+                                    nomor_kartu: '0000097208276'
+                                    nomor_sep: 'UJICOBA6'
+                                    nomor_rm: 'A002122'
+                                    nama_pasien: 'PASIEN UJICOBA IDRG 2'
+                                    tgl_lahir: '2000-01-01 02:00:00'
+                                    gender: '2'
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SuccessResponse'
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /set-claim-data/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Set claim data
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA1'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: set_claim_data
+                                    nomor_sep: UJICOBA1
+                                data:
+                                    nomor_sep: 'UJICOBA1'
+                                    nomor_kartu: '0000097208276'
+                                    tgl_masuk: '2024-11-09 08:55:00'
+                                    tgl_pulang: '2024-11-09 09:55:00'
+                                    cara_masuk: 'gp'
+                                    jenis_rawat: '2'
+                                    kelas_rawat: '3'
+                                    adl_sub_acute: '15'
+                                    adl_chronic: '12'
+                                    icu_indikator: '0'
+                                    icu_los: '0'
+                                    upgrade_class_ind: '0'
+                                    add_payment_pct: '10'
+                                    birth_weight: '0'
+                                    sistole: 110
+                                    diastole: 60
+                                    discharge_status: '1'
+                                    tarif_rs:
+                                        prosedur_non_bedah: '300000'
+                                        prosedur_bedah: '20000000'
+                                        konsultasi: '300000'
+                                        tenaga_ahli: '200000'
+                                        keperawatan: '80000'
+                                        penunjang: '1000000'
+                                        radiologi: '500000'
+                                        laboratorium: '600000'
+                                        pelayanan_darah: '150000'
+                                        rehabilitasi: '100000'
+                                        kamar: '6000000'
+                                        rawat_intensif: '2500000'
+                                        obat: '100000'
+                                        obat_kronis: '1000000'
+                                        obat_kemoterapi: '5000000'
+                                        alkes: '500000'
+                                        bmhp: '400000'
+                                        sewa_alat: '210000'
+                                    pemulasaraan_jenazah: '1'
+                                    kantong_jenazah: '1'
+                                    peti_jenazah: '1'
+                                    plastik_erat: '1'
+                                    desinfektan_jenazah: '1'
+                                    mobil_jenazah: '0'
+                                    desinfektan_mobil_jenazah: '0'
+                                    covid19_status_cd: '1'
+                                    nomor_kartu_t: 'nik'
+                                    episodes: '1;12#2;3#6;5'
+                                    akses_naat: 'C'
+                                    isoman_ind: '0'
+                                    bayi_lahir_status_cd: 1
+                                    dializer_single_use: '1'
+                                    kantong_darah: 1
+                                    alteplase_ind: 1
+                                    tarif_poli_eks: '100000'
+                                    nama_dokter: 'BAMBANG, DR'
+                                    kode_tarif: 'AP'
+                                    payor_id: '3'
+                                    payor_cd: 'JKN'
+                                    cob_cd: 0
+                                    coder_nik: '123123123123'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /idrg-diagnosa-set/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Set iDRG diagnosa
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: idrg_diagnosa_set
+                                    nomor_sep: UJICOBA5
+                                data:
+                                    diagnosa: 'S71.0#A00.1'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /idrg-diagnosa-get/{nomor_sep}:
+        post:
+            tags:
+                - iDRG
+            summary: Get iDRG diagnosa
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: idrg_diagnosa_get
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/DiagnosaData'
+                400:
+                    description: Bad Request
+
+    /idrg-procedure-set/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Set iDRG procedure
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA3'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: idrg_procedure_set
+                                    nomor_sep: UJICOBA3
+                                data:
+                                    procedure: '88.01#90.090+2#90.090'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /idrg-procedure-get/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Get iDRG procedure
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA3'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: idrg_procedure_get
+                                    nomor_sep: UJICOBA3
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/ProcedureData'
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /grouping-idrg/sep/{nomor_sep}/stage/{stage}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Grouping iDRG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+                - name: stage
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: '1'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: grouper
+                                    stage: '1'
+                                    grouper: idrg
+                                data:
+                                    nomor_sep: 'UJICOBA5'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /final-idrg/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Final iDRG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: final_idrg
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /reedit-idrg/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Re-edit iDRG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: reedit_idrg
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /idrg-to-inacbg-import/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - iDRG
+            summary: Import iDRG to INACBG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: idrg_to_inacbg_import
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /inacbg-diagnosa-set/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Set INACBG diagnosa
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: inacbg_diagnosa_set
+                                    nomor_sep: UJICOBA5
+                                data:
+                                    diagnosa: 'S71.0#A00.1'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /inacbg-diagnosa-get/{nomor_sep}:
+        post:
+            tags:
+                - INACBG
+            summary: Get INACBG diagnosa
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: inacbg_diagnosa_get
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/DiagnosaData'
+                400:
+                    description: Bad Request
+
+    /inacbg-procedure-set/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Set INACBG procedure
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA3'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: inacbg_procedure_set
+                                    nomor_sep: UJICOBA3
+                                data:
+                                    procedure: '88.01#90.090+2#90.090'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /inacbg-procedure-get/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Get INACBG procedure
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA3'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: inacbg_procedure_get
+                                    nomor_sep: UJICOBA3
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/ProcedureData'
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /grouping-inacbg/sep/{nomor_sep}/stage/{stage}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Grouping INACBG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+                - name: stage
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: '1'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: grouper
+                                    stage: '1'
+                                    grouper: inacbg
+                                data:
+                                    nomor_sep: 'UJICOBA5'
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /final-inacbg/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Final INACBG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: final_inacbg
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /reedit-inacbg/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - INACBG
+            summary: Re-edit INACBG
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: reedit_inacbg
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /claim-final/sep/{nomor_sep}/coder/{coder}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - Claim
+            summary: Final claim
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+                - name: coder
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'CODER001'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: claim_final
+                                    nomor_sep: UJICOBA5
+                                    coder: CODER001
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /claim-reedit/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - Claim
+            summary: Re-edit claim
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: claim_reedit
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /claim-send/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - Claim
+            summary: Send claim
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: claim_send
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /get-claim-data/{nomor_sep}:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - Claim
+            summary: Get claim data
+            parameters:
+                - name: nomor_sep
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  example: 'UJICOBA5'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: get_claim_data
+                                    nomor_sep: UJICOBA5
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/ClaimData'
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized

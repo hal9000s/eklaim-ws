@@ -1,0 +1,9 @@
+*.log
+npm-debug.log*
+/logs
+/node_modules
+.env
+Dockerfile
+docker-compose.dev.yml
+docker-compose.prod.yml
+docker-compose.yml
