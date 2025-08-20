@@ -581,6 +581,27 @@ class EklaimServices {
         }
     }
 
+    /*==================== Retrieve Claim Status ====================*/
+    async retrieveClaimStatus(req, res) {
+        const { nomor_sep, nomor_pengajuan } = req.body;
+        const payload = {
+            metadata: {
+                method: 'retrieve_claim_status'
+            },
+            data: {
+                nomor_sep: nomor_sep,
+                nomor_pengajuan: nomor_pengajuan
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
     /*==================== Delete Claim ====================*/
     async deleteClaim(req, res) {
         const { nomor_sep, coder_nik } = req.body;

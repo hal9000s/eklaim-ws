@@ -97,6 +97,11 @@ const sITBValidator = [
     body('nomor_register_sitb').isString(),
     generateValidator
 ];
+const covidClaimValidator = [
+    body('nomor_sep').isString(),
+    body('nomor_pengajuan').isString(),
+    generateValidator
+];
 
 class EklaimController extends Router {
     constructor() {
@@ -286,6 +291,13 @@ class EklaimController extends Router {
             authenticate,
             ...noSEPValidator,
             (req, res) => service.getClaimStatus(req, res)
+        );
+
+        this.post(
+            '/retrieve-claim-status',
+            authenticate,
+            ...covidClaimValidator,
+            (req, res) => service.retrieveClaimStatus(req, res)
         );
 
         this.post(

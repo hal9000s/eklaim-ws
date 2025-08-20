@@ -1041,6 +1041,42 @@ paths:
                 401:
                     description: Unauthorized
 
+    /retrieve-claim-status:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - Claim
+            summary: Retrieve claim status COVID-19
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                metadata:
+                                    method: retrieve_claim_status
+                                data:
+                                    nomor_sep: 0000005ICC20040018
+                                    nomor_pengajuan: 0000005R47010601
+            responses:
+                200:
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/SuccessResponse'
+                                    - type: object
+                                      properties:
+                                          data:
+                                              $ref: '#/components/schemas/ClaimData'
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
     /delete-claim:
         post:
             security:
