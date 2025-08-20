@@ -10,48 +10,56 @@ class EklaimServices {
     constructor() {}
 
     // ========================================================
+    // PATIENT SERVICES
+    // ========================================================
+
+    /*==================== Update Patient ====================*/
+    async updatePatient(req, res) {
+        const { nomor_rm } = req.body;
+        const payload = {
+            metadata: {
+                method: 'update_patient',
+                nomor_rm: nomor_rm
+            },
+            data: req.body
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Delete Patient ====================*/
+    async deletePatient(req, res) {
+        const { nomor_rm, coder_nik } = req.body;
+        const payload = {
+            metadata: {
+                method: 'delete_patient'
+            },
+            data: {
+                nomor_rm: nomor_rm,
+                coder_nik: coder_nik
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    // ========================================================
     // iDRG SERVICES
     // ========================================================
 
-    /*==================== New Claim ====================*/
-    async newClaim(req, res) {
-        const payload = {
-            metadata: {
-                method: 'new_claim'
-            },
-            data: req.body
-        };
-
-        try {
-            let response = await eKlaim().post('', inacbgEncrypt(payload));
-            return eklaim_resp(req, res, response);
-        } catch (error) {
-            return handleEklaimError(res, error);
-        }
-    }
-
-    /*==================== Set Claim Data ====================*/
-    async setClaimData(req, res) {
-        const { nomor_sep } = req.params;
-        const payload = {
-            metadata: {
-                method: 'set_claim_data',
-                nomor_sep: nomor_sep
-            },
-            data: req.body
-        };
-
-        try {
-            let response = await eKlaim().post('', inacbgEncrypt(payload));
-            return eklaim_resp(req, res, response);
-        } catch (error) {
-            return handleEklaimError(res, error);
-        }
-    }
-
     /*==================== iDRG Diagnosa Set ====================*/
     async iDRGDiagnosaSet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_diagnosa_set',
@@ -70,7 +78,7 @@ class EklaimServices {
 
     /*==================== iDRG Diagnosa Get ====================*/
     async iDRGDiagnosaGet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_diagnosa_get'
@@ -90,7 +98,7 @@ class EklaimServices {
 
     /*==================== iDRG Procedure Set ====================*/
     async iDRGProcedureSet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_procedure_set',
@@ -109,7 +117,7 @@ class EklaimServices {
 
     /*==================== iDRG Procedure Get ====================*/
     async iDRGProcedureGet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_procedure_get'
@@ -129,7 +137,7 @@ class EklaimServices {
 
     /*==================== Grouping iDRG ====================*/
     async groupingiDRG(req, res) {
-        const { stage, nomor_sep } = req.params;
+        const { stage, nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'grouper',
@@ -151,7 +159,7 @@ class EklaimServices {
 
     /*==================== Final iDRG ====================*/
     async finaliDRG(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_grouper_final'
@@ -171,7 +179,7 @@ class EklaimServices {
 
     /*==================== Reedit iDRG ====================*/
     async reeditiDRG(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_grouper_reedit'
@@ -191,7 +199,7 @@ class EklaimServices {
 
     /*==================== iDRG To INACBG Import====================*/
     async iDRGToINACBGImport(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'idrg_to_inacbg_import'
@@ -215,7 +223,7 @@ class EklaimServices {
 
     /*==================== INACBG Diagnosa Set ====================*/
     async iNACBGDiagnosaSet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_diagnosa_set',
@@ -234,7 +242,7 @@ class EklaimServices {
 
     /*==================== INACBG Diagnosa Get ====================*/
     async iNACBGDiagnosaGet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_diagnosa_get'
@@ -254,7 +262,7 @@ class EklaimServices {
 
     /*==================== INACBG Procedure Set ====================*/
     async iNACBGProcedureSet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_procedure_set',
@@ -273,7 +281,7 @@ class EklaimServices {
 
     /*==================== INACBG Procedure Get ====================*/
     async iNACBGProcedureGet(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_procedure_get'
@@ -293,15 +301,14 @@ class EklaimServices {
 
     /*==================== Grouping INACBG ====================*/
     async groupingINACBG(req, res) {
-        const { stage, nomor_sep } = req.params;
-        const { special_cmg } = req.body;
+        const { stage, nomor_sep, special_cmg } = req.body;
 
         if (stage === '2') {
             if (!special_cmg || special_cmg === '') {
                 return resp(
                     res,
                     StatusCodes.BAD_REQUEST,
-                    'Special cmg tidak boleh kosong'
+                    'Special cmg pastikan diisi dengan benar'
                 );
             }
         }
@@ -332,7 +339,7 @@ class EklaimServices {
 
     /*==================== Final INACBG ====================*/
     async finalINACBG(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_grouper_final'
@@ -352,7 +359,7 @@ class EklaimServices {
 
     /*==================== Reedit INACBG ====================*/
     async reeditINACBG(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'inacbg_grouper_reedit'
@@ -370,16 +377,56 @@ class EklaimServices {
         }
     }
 
+    // ========================================================
+    // CLAIM SERVICES
+    // ========================================================
+
+    /*==================== New Claim ====================*/
+    async newClaim(req, res) {
+        const payload = {
+            metadata: {
+                method: 'new_claim'
+            },
+            data: req.body
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Set Claim Data ====================*/
+    async setClaimData(req, res) {
+        const { nomor_sep } = req.body;
+        const payload = {
+            metadata: {
+                method: 'set_claim_data',
+                nomor_sep: nomor_sep
+            },
+            data: req.body
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
     /*==================== Claim Final ====================*/
     async claimFinal(req, res) {
-        const { nomor_sep, coder } = req.params;
+        const { nomor_sep, coder_nik } = req.body;
         const payload = {
             metadata: {
                 method: 'claim_final'
             },
             data: {
                 nomor_sep: nomor_sep,
-                coder_nik: coder
+                coder_nik: coder_nik
             }
         };
 
@@ -393,7 +440,7 @@ class EklaimServices {
 
     /*==================== Claim Reedit ====================*/
     async claimReedit(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'reedit_claim'
@@ -411,9 +458,9 @@ class EklaimServices {
         }
     }
 
-    /*==================== Claim Send ====================*/
-    async claimSend(req, res) {
-        const { nomor_sep } = req.params;
+    /*==================== Claim Send Individual ====================*/
+    async claimSendIndividual(req, res) {
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'send_claim_individual'
@@ -433,10 +480,235 @@ class EklaimServices {
 
     /*==================== Get Claim Data ====================*/
     async getClaimData(req, res) {
-        const { nomor_sep } = req.params;
+        const { nomor_sep } = req.body;
         const payload = {
             metadata: {
                 method: 'get_claim_data'
+            },
+            data: {
+                nomor_sep: nomor_sep
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Claim Print ====================*/
+    async claimPrint(req, res) {
+        const { nomor_sep } = req.body;
+        const payload = {
+            metadata: {
+                method: 'claim_print'
+            },
+            data: {
+                nomor_sep: nomor_sep
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Claim Send ====================*/
+    async claimSend(req, res) {
+        const { start_dt, stop_dt, jenis_rawat, date_type } = req.body;
+        const payload = {
+            metadata: {
+                method: 'claim_send'
+            },
+            data: {
+                start_dt: start_dt,
+                stop_dt: stop_dt,
+                jenis_rawat: jenis_rawat,
+                date_type: date_type
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Generate Claim Number ====================*/
+    async generateClaimNumber(req, res) {
+        const { payor_id } = req.body;
+        const payload = {
+            metadata: {
+                method: 'generate_claim_number'
+            },
+            data: {
+                payor_id: payor_id
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Get Claim Status ====================*/
+    async getClaimStatus(req, res) {
+        const { nomor_sep } = req.body;
+        const payload = {
+            metadata: {
+                method: 'get_claim_status'
+            },
+            data: {
+                nomor_sep: nomor_sep
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Delete Claim ====================*/
+    async deleteClaim(req, res) {
+        const { nomor_sep, coder_nik } = req.body;
+        const payload = {
+            metadata: {
+                method: 'delete_claim'
+            },
+            data: {
+                nomor_sep: nomor_sep,
+                coder_nik: coder_nik
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    // ========================================================
+    // DIAGNOSIS SERVICES
+    // ========================================================
+
+    /*==================== Search Diagnosis ====================*/
+    async searchDiagnosis(req, res) {
+        const { keyword } = req.body;
+        const payload = {
+            metadata: {
+                method: 'search_diagnosis'
+            },
+            keyword: keyword
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Search Procedure ====================*/
+    async searchProcedure(req, res) {
+        const { keyword } = req.body;
+        const payload = {
+            metadata: {
+                method: 'search_procedures'
+            },
+            keyword: keyword
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Search Diagnosis INA Grouper ====================*/
+    async searchDiagnosisInagrouper(req, res) {
+        const { keyword } = req.body;
+        const payload = {
+            metadata: {
+                method: 'search_diagnosis_inagrouper'
+            },
+            keyword: keyword
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== Search Procedure INA Grouper ====================*/
+    async searchProcedureInagrouper(req, res) {
+        const { keyword } = req.body;
+        const payload = {
+            metadata: {
+                method: 'search_procedures_inagrouper'
+            },
+            keyword: keyword
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    // ========================================================
+    // SITB SERVICES
+    // ========================================================
+
+    /*==================== SITB Validate ====================*/
+    async sITBValidate(req, res) {
+        const { nomor_sep, nomor_register_sitb } = req.body;
+        const payload = {
+            metadata: {
+                method: 'sitb_validate'
+            },
+            data: {
+                nomor_sep: nomor_sep,
+                nomor_register_sitb: nomor_register_sitb
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== SITB Invalidate ====================*/
+    async sITBInvalidate(req, res) {
+        const { nomor_sep } = req.body;
+        const payload = {
+            metadata: {
+                method: 'sitb_invalidate'
             },
             data: {
                 nomor_sep: nomor_sep
