@@ -1,5 +1,7 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('./helpers/swagger-ui');
+const { basicAuth } = require('./middlewares/AuthMiddleware');
+const { NODE_ENV } = require('../src/app.constant');
 
 const appSwagger = (app) => {
     var swaggerOptions = {
@@ -23,6 +25,7 @@ const appSwagger = (app) => {
     const swaggerSpec = swaggerJSDoc(options);
     app.use(
         '/api-catalogue',
+        NODE_ENV === 'production' ? basicAuth : undefined,
         swaggerUi.serve,
         swaggerUi.setup(swaggerSpec, swaggerOptions)
     );

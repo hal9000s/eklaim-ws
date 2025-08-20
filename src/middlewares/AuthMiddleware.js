@@ -1,4 +1,4 @@
-const { API_KEY } = require('../app.constant');
+const { EKLAIM_ENCRYPTION_KEY, API_KEY } = require('../app.constant');
 const log = require('../helpers/winston');
 const resp = require('../helpers/response');
 const { StatusCodes, ReasonPhrases } = require('http-status-codes');
@@ -47,7 +47,7 @@ exports.basicAuth = (req, res, next) => {
             .split(':');
         let user = auth[0];
         let pass = auth[1];
-        if (user == API_KEY && pass == API_KEY) {
+        if (user == API_KEY && pass == EKLAIM_ENCRYPTION_KEY) {
             // log.info('Access logs => ' + user);
             next();
         } else {
