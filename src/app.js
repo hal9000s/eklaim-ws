@@ -10,6 +10,7 @@ const {
     ErrorMiddleware,
     NotFoundRouteErrorMiddleware
 } = require('./middlewares/ErrorMiddleware');
+const { basicAuth } = require('./middlewares/AuthMiddleware');
 const { logActivity } = require('./helpers/utils');
 const HomeController = require('./api/home/HomeController');
 const DocsIndexController = require('./docs/index');
@@ -67,7 +68,11 @@ class App extends Application {
             })
         );
         this.use(HomeController);
-        this.use('/docs', DocsIndexController);
+        this.use(
+            '/docs',
+            NODE_ENV !== 'development' ? basicAuth : undefined,
+            DocsIndexController
+        );
         this.use(PATH_API, createRoutes());
         this.use(ErrorMiddleware(this));
         this.use(NotFoundRouteErrorMiddleware(this));

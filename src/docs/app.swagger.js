@@ -28,7 +28,7 @@ const appSwagger = (app) => {
 
     app.use(
         '/api-catalogue',
-        NODE_ENV === 'production' ? basicAuth : (req, res, next) => next(),
+        NODE_ENV !== 'development' ? basicAuth : (req, res, next) => next(),
         swaggerUi.serve,
         (req, res) => res.send(swaggerHtml)
     );

@@ -210,7 +210,7 @@ const appRedoc = (app) => {
         }
     });
 
-    if (NODE_ENV === 'production') {
+    if (NODE_ENV !== 'development') {
         app.use('/api-docs', basicAuth);
     }
 
