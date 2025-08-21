@@ -12,6 +12,7 @@ const {
 } = require('./middlewares/ErrorMiddleware');
 const { logActivity } = require('./helpers/utils');
 const HomeController = require('./api/home/HomeController');
+const DocsIndexController = require('./docs/index');
 const createRoutes = require('./app.routes');
 const appSwagger = require('../src/docs/app.swagger');
 const appRedoc = require('../src/docs/app.redoc');
@@ -66,6 +67,7 @@ class App extends Application {
             })
         );
         this.use(HomeController);
+        this.use('/docs', DocsIndexController);
         this.use(PATH_API, createRoutes());
         this.use(ErrorMiddleware(this));
         this.use(NotFoundRouteErrorMiddleware(this));
