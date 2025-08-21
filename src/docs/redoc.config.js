@@ -30,11 +30,11 @@ module.exports = {
         // ],
         components: {
             securitySchemes: {
-                // bearerAuth: {
-                //     type: 'http',
-                //     scheme: 'bearer',
-                //     bearerFormat: 'JWT'
-                // },
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT'
+                },
                 apiKeyAuth: {
                     type: 'apiKey',
                     in: 'header',
@@ -100,20 +100,21 @@ module.exports = {
                 width: '40%'
             }
         },
-        scrollYOffset: 0,
-        hideDownloadButton: false,
+        hideHostname: true,
+        showExtensions: false,
+        expandResponses: 'none',
+        noAutoAuth: true,
+        hideDownloadButton: true,
+        hideLoading: false,
         disableSearch: false,
-        expandResponses: 'all',
-        pathInMiddlePanel: true,
-        requiredPropsFirst: true,
-        sortPropsAlphabetically: true,
-        showExtensions: true,
-        nativeScrollbars: false,
-        noAutoAuth: false,
-        hideHostname: false,
-        expandSingleSchemaField: true,
-        showObjectSchemaExamples: true,
-        unstable_ignoreMimeTypeErrors: false
+        scrollYOffset: 0,
+        hideRequestPayloadSample: false
+    },
+
+    uiOptions: {
+        showDownloadButton: false,
+        showAuthButton: false,
+        showFooter: false
     },
 
     // Options merge strategy
@@ -130,8 +131,8 @@ module.exports = {
 
     // Debug options
     debug: {
-        logFileProcessing: true,
+        logFileProcessing: false,
         logMergeProcess: false,
-        showWarnings: true
+        showWarnings: false
     }
 };

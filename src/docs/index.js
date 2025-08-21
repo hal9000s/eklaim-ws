@@ -1,9 +1,21 @@
-const { NODE_ENV } = require('../app.constant');
+const { NODE_ENV, ALLOWED_HOST } = require('../app.constant');
+const resp = require('../helpers/response');
+const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 
 const DocsIndexController = (req, res) => {
-    const protocol = req.secure ? 'https' : 'http';
-    const baseUrl = `${protocol}://${req.headers.host}`;
-    
+    const host =
+        NODE_ENV === 'development'
+            ? req.headers.host
+            : req.headers.host.split(':')[0];
+    if (!ALLOWED_HOST.includes(host)) {
+        return resp(res, StatusCodes.FORBIDDEN, ReasonPhrases.FORBIDDEN);
+    }
+    const protocol =
+        req.secure || req.headers['x-forwarded-proto'] === 'https'
+            ? 'https'
+            : 'http';
+    const baseUrl = `${protocol}://${host}`;
+
     const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -121,29 +133,6 @@ const DocsIndexController = (req, res) => {
             line-height: 1.4;
         }
         
-        .api-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .api-link {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1rem;
-            text-decoration: none;
-            color: #475569;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-        
-        .api-link:hover {
-            background: #e2e8f0;
-            border-color: #667eea;
-        }
-        
         .env-badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
@@ -173,7 +162,7 @@ const DocsIndexController = (req, res) => {
 <body>
     <div class="container">
         <div class="logo">EK</div>
-        <div class="env-badge">${NODE_ENV.toUpperCase()} Environment</div>
+        <div class="env-badge">${NODE_ENV.toUpperCase()} ENVIRONMENT</div>
         <h1>E-Klaim API Portal</h1>
         <p class="subtitle">
             Choose your preferred API documentation format below. 
@@ -197,7 +186,13 @@ const DocsIndexController = (req, res) => {
 </body>
 </html>
     `;
-    
+
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, proxy-revalidate'
+    );
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.send(html);
 };
 

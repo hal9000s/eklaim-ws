@@ -4,12 +4,6 @@ const { basicAuth } = require('../middlewares/AuthMiddleware');
 const { NODE_ENV } = require('../app.constant');
 
 const appSwagger = (app) => {
-    var swaggerOptions = {
-        explorer: false,
-        customSiteTitle: `E-Klaim Web Service Catalog`,
-        customCss: '.topbar { display: none }'
-    };
-
     const swaggerDefinition = {
         openapi: '3.0.3',
         info: {
@@ -23,11 +17,20 @@ const appSwagger = (app) => {
         apis: ['./src/api/**/*.yaml']
     };
     const swaggerSpec = swaggerJSDoc(options);
+
+    let swaggerHtml = swaggerUi.generateHTML(swaggerSpec, {
+        explorer: false,
+        customSiteTitle: 'E-Klaim Web Service Catalog',
+        customCss: '.topbar { display: none }'
+    });
+
+    swaggerHtml = swaggerHtml.replace(/<link rel="icon"[^>]*>/g, '');
+
     app.use(
         '/api-catalogue',
-        NODE_ENV === 'production' ? basicAuth : undefined,
+        NODE_ENV === 'production' ? basicAuth : (req, res, next) => next(),
         swaggerUi.serve,
-        swaggerUi.setup(swaggerSpec, swaggerOptions)
+        (req, res) => res.send(swaggerHtml)
     );
 };
 
