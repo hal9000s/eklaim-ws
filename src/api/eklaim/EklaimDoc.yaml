@@ -17,6 +17,8 @@ tags:
       description: Claim operations
     - name: SITB
       description: SITB operations
+    - name: File
+      description: File operations
 
 components:
     securitySchemes:
@@ -24,57 +26,6 @@ components:
             type: apiKey
             in: header
             name: Authorization
-
-    schemas:
-        ErrorResponse:
-            type: object
-            properties:
-                error:
-                    type: string
-                message:
-                    type: string
-
-        SuccessResponse:
-            type: object
-            properties:
-                status:
-                    type: string
-                    example: 'success'
-                data:
-                    type: object
-
-        ClaimData:
-            type: object
-            properties:
-                nomor_sep:
-                    type: string
-                    example: '0301R0011023V000001'
-                data:
-                    type: object
-
-        DiagnosaData:
-            type: object
-            properties:
-                diagnosa_primer:
-                    type: string
-                    example: 'A01.0'
-                diagnosa_sekunder:
-                    type: array
-                    items:
-                        type: string
-                    example: ['B02.1', 'C03.2']
-
-        ProcedureData:
-            type: object
-            properties:
-                procedure_primer:
-                    type: string
-                    example: '00.01'
-                procedure_sekunder:
-                    type: array
-                    items:
-                        type: string
-                    example: ['00.02', '00.03']
 
 paths:
     /search-diagnosis:
@@ -91,13 +42,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: search_diagnosis
-                                data:
-                                    keyword: A00
+                                # metadata:
+                                #     method: search_diagnosis
+                                # data:
+                                #     keyword: A00
+                                keyword: 'A00'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -117,13 +69,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: search_procedures
-                                data:
-                                    keyword: '88.01'
+                                # metadata:
+                                #     method: search_procedures
+                                # data:
+                                #     keyword: '88.01'
+                                keyword: '88.01'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -143,13 +96,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: search_diagnosis_inagrouper
-                                data:
-                                    keyword: A00
+                                # metadata:
+                                #     method: search_diagnosis_inagrouper
+                                # data:
+                                #     keyword: A00
+                                keyword: 'A00'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -169,13 +123,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: search_procedures_inagrouper
-                                data:
-                                    keyword: '88.01'
+                                # metadata:
+                                #     method: search_procedures_inagrouper
+                                # data:
+                                #     keyword: '88.01'
+                                keyword: '88.01'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -195,17 +150,22 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: update_patient
-                                data:
-                                    nomor_kartu: '0000668800001'
-                                    nomor_rm: 123-45-76
-                                    nama_pasien: NAMA TEST PASIEN
-                                    tgl_lahir: 1940-01-01 02:00:00
-                                    gender: '2'
+                                # metadata:
+                                #     method: update_patient
+                                # data:
+                                #     nomor_kartu: '0000668800001'
+                                #     nomor_rm: 123-45-76
+                                #     nama_pasien: NAMA TEST PASIEN
+                                #     tgl_lahir: 1940-01-01 02:00:00
+                                #     gender: '2'
+                                nomor_kartu: '0000668800001'
+                                nomor_rm: 123-45-76
+                                nama_pasien: NAMA TEST PASIEN
+                                tgl_lahir: 1940-01-01 02:00:00
+                                gender: '2'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -225,14 +185,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: delete_patient
-                                data:
-                                    nomor_rm: 123-45-76
-                                    coder_nik: CODER001
+                                # metadata:
+                                #     method: delete_patient
+                                # data:
+                                #     nomor_rm: 123-45-76
+                                #     coder_nik: CODER001
+                                nomor_rm: 123-45-76
+                                coder_nik: CODER001
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -252,22 +214,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: generate_claim_number
-                                data:
-                                    payor_id: '71'
+                                # metadata:
+                                #     method: generate_claim_number
+                                # data:
+                                #     payor_id: '71'
+                                payor_id: '71'
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -287,22 +241,24 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: new_claim
-                                data:
-                                    nomor_kartu: '0000097208276'
-                                    nomor_sep: 'UJICOBA6'
-                                    nomor_rm: 'A002122'
-                                    nama_pasien: 'PASIEN UJICOBA IDRG 2'
-                                    tgl_lahir: '2000-01-01 02:00:00'
-                                    gender: '2'
+                                # metadata:
+                                #     method: new_claim
+                                # data:
+                                #     nomor_kartu: '0000097208276'
+                                #     nomor_sep: 'UJICOBA6'
+                                #     nomor_rm: 'A002122'
+                                #     nama_pasien: 'PASIEN UJICOBA IDRG 2'
+                                #     tgl_lahir: '2000-01-01 02:00:00'
+                                #     gender: '2'
+                                nomor_kartu: '0000097208276'
+                                nomor_sep: 'UJICOBA6'
+                                nomor_rm: 'A002122'
+                                nama_pasien: 'PASIEN UJICOBA IDRG 2'
+                                tgl_lahir: '2000-01-01 02:00:00'
+                                gender: '2'
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/SuccessResponse'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -322,72 +278,131 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: set_claim_data
-                                    nomor_sep: UJICOBA1
-                                data:
-                                    nomor_sep: 'UJICOBA1'
-                                    nomor_kartu: '0000097208276'
-                                    tgl_masuk: '2024-11-09 08:55:00'
-                                    tgl_pulang: '2024-11-09 09:55:00'
-                                    cara_masuk: 'gp'
-                                    jenis_rawat: '2'
-                                    kelas_rawat: '3'
-                                    adl_sub_acute: '15'
-                                    adl_chronic: '12'
-                                    icu_indikator: '0'
-                                    icu_los: '0'
-                                    upgrade_class_ind: '0'
-                                    add_payment_pct: '10'
-                                    birth_weight: '0'
-                                    sistole: 110
-                                    diastole: 60
-                                    discharge_status: '1'
-                                    tarif_rs:
-                                        prosedur_non_bedah: '300000'
-                                        prosedur_bedah: '20000000'
-                                        konsultasi: '300000'
-                                        tenaga_ahli: '200000'
-                                        keperawatan: '80000'
-                                        penunjang: '1000000'
-                                        radiologi: '500000'
-                                        laboratorium: '600000'
-                                        pelayanan_darah: '150000'
-                                        rehabilitasi: '100000'
-                                        kamar: '6000000'
-                                        rawat_intensif: '2500000'
-                                        obat: '100000'
-                                        obat_kronis: '1000000'
-                                        obat_kemoterapi: '5000000'
-                                        alkes: '500000'
-                                        bmhp: '400000'
-                                        sewa_alat: '210000'
-                                    pemulasaraan_jenazah: '1'
-                                    kantong_jenazah: '1'
-                                    peti_jenazah: '1'
-                                    plastik_erat: '1'
-                                    desinfektan_jenazah: '1'
-                                    mobil_jenazah: '0'
-                                    desinfektan_mobil_jenazah: '0'
-                                    covid19_status_cd: '1'
-                                    nomor_kartu_t: 'nik'
-                                    episodes: '1;12#2;3#6;5'
-                                    akses_naat: 'C'
-                                    isoman_ind: '0'
-                                    bayi_lahir_status_cd: 1
-                                    dializer_single_use: '1'
-                                    kantong_darah: 1
-                                    alteplase_ind: 1
-                                    tarif_poli_eks: '100000'
-                                    nama_dokter: 'BAMBANG, DR'
-                                    kode_tarif: 'AP'
-                                    payor_id: '3'
-                                    payor_cd: 'JKN'
-                                    cob_cd: 0
-                                    coder_nik: '123123123123'
+                                # metadata:
+                                #     method: set_claim_data
+                                #     nomor_sep: UJICOBA1
+                                # data:
+                                #     nomor_sep: 'UJICOBA1'
+                                #     nomor_kartu: '0000097208276'
+                                #     tgl_masuk: '2024-11-09 08:55:00'
+                                #     tgl_pulang: '2024-11-09 09:55:00'
+                                #     cara_masuk: 'gp'
+                                #     jenis_rawat: '2'
+                                #     kelas_rawat: '3'
+                                #     adl_sub_acute: '15'
+                                #     adl_chronic: '12'
+                                #     icu_indikator: '0'
+                                #     icu_los: '0'
+                                #     upgrade_class_ind: '0'
+                                #     add_payment_pct: '10'
+                                #     birth_weight: '0'
+                                #     sistole: 110
+                                #     diastole: 60
+                                #     discharge_status: '1'
+                                #     tarif_rs:
+                                #         prosedur_non_bedah: '300000'
+                                #         prosedur_bedah: '20000000'
+                                #         konsultasi: '300000'
+                                #         tenaga_ahli: '200000'
+                                #         keperawatan: '80000'
+                                #         penunjang: '1000000'
+                                #         radiologi: '500000'
+                                #         laboratorium: '600000'
+                                #         pelayanan_darah: '150000'
+                                #         rehabilitasi: '100000'
+                                #         kamar: '6000000'
+                                #         rawat_intensif: '2500000'
+                                #         obat: '100000'
+                                #         obat_kronis: '1000000'
+                                #         obat_kemoterapi: '5000000'
+                                #         alkes: '500000'
+                                #         bmhp: '400000'
+                                #         sewa_alat: '210000'
+                                #     pemulasaraan_jenazah: '1'
+                                #     kantong_jenazah: '1'
+                                #     peti_jenazah: '1'
+                                #     plastik_erat: '1'
+                                #     desinfektan_jenazah: '1'
+                                #     mobil_jenazah: '0'
+                                #     desinfektan_mobil_jenazah: '0'
+                                #     covid19_status_cd: '1'
+                                #     nomor_kartu_t: 'nik'
+                                #     episodes: '1;12#2;3#6;5'
+                                #     akses_naat: 'C'
+                                #     isoman_ind: '0'
+                                #     bayi_lahir_status_cd: 1
+                                #     dializer_single_use: '1'
+                                #     kantong_darah: 1
+                                #     alteplase_ind: 1
+                                #     tarif_poli_eks: '100000'
+                                #     nama_dokter: 'BAMBANG, DR'
+                                #     kode_tarif: 'AP'
+                                #     payor_id: '3'
+                                #     payor_cd: 'JKN'
+                                #     cob_cd: 0
+                                #     coder_nik: '123123123123'
+                                nomor_sep: 'UJICOBA1'
+                                nomor_kartu: '0000097208276'
+                                tgl_masuk: '2024-11-09 08:55:00'
+                                tgl_pulang: '2024-11-09 09:55:00'
+                                cara_masuk: 'gp'
+                                jenis_rawat: '2'
+                                kelas_rawat: '3'
+                                adl_sub_acute: '15'
+                                adl_chronic: '12'
+                                icu_indikator: '0'
+                                icu_los: '0'
+                                upgrade_class_ind: '0'
+                                add_payment_pct: '10'
+                                birth_weight: '0'
+                                sistole: 110
+                                diastole: 60
+                                discharge_status: '1'
+                                tarif_rs:
+                                    prosedur_non_bedah: '300000'
+                                    prosedur_bedah: '20000000'
+                                    konsultasi: '300000'
+                                    tenaga_ahli: '200000'
+                                    keperawatan: '80000'
+                                    penunjang: '1000000'
+                                    radiologi: '500000'
+                                    laboratorium: '600000'
+                                    pelayanan_darah: '150000'
+                                    rehabilitasi: '100000'
+                                    kamar: '6000000'
+                                    rawat_intensif: '2500000'
+                                    obat: '100000'
+                                    obat_kronis: '1000000'
+                                    obat_kemoterapi: '5000000'
+                                    alkes: '500000'
+                                    bmhp: '400000'
+                                    sewa_alat: '210000'
+                                pemulasaraan_jenazah: '1'
+                                kantong_jenazah: '1'
+                                peti_jenazah: '1'
+                                plastik_erat: '1'
+                                desinfektan_jenazah: '1'
+                                mobil_jenazah: '0'
+                                desinfektan_mobil_jenazah: '0'
+                                covid19_status_cd: '1'
+                                nomor_kartu_t: 'nik'
+                                episodes: '1;12#2;3#6;5'
+                                akses_naat: 'C'
+                                isoman_ind: '0'
+                                bayi_lahir_status_cd: 1
+                                dializer_single_use: '1'
+                                kantong_darah: 1
+                                alteplase_ind: 1
+                                tarif_poli_eks: '100000'
+                                nama_dokter: 'BAMBANG, DR'
+                                kode_tarif: 'AP'
+                                payor_id: '3'
+                                payor_cd: 'JKN'
+                                cob_cd: 0
+                                coder_nik: '123123123123'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -407,14 +422,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: idrg_diagnosa_set
-                                    nomor_sep: UJICOBA5
-                                data:
-                                    diagnosa: 'S71.0#A00.1'
+                                # metadata:
+                                #     method: idrg_diagnosa_set
+                                #     nomor_sep: UJICOBA5
+                                # data:
+                                #     diagnosa: 'S71.0#A00.1'
+                                nomor_sep: UJICOBA5
+                                diagnosa: 'S71.0#A00.1'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -432,22 +449,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: idrg_diagnosa_get
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: idrg_diagnosa_get
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/DiagnosaData'
+                    description: OK
                 400:
                     description: Bad Request
 
@@ -465,14 +474,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: idrg_procedure_set
-                                    nomor_sep: UJICOBA3
-                                data:
-                                    procedure: '88.01#90.090+2#90.090'
+                                # metadata:
+                                #     method: idrg_procedure_set
+                                #     nomor_sep: UJICOBA3
+                                # data:
+                                #     procedure: '88.01#90.090+2#90.090'
+                                nomor_sep: UJICOBA3
+                                procedure: '88.01#90.090+2#90.090'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -492,22 +503,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: idrg_procedure_get
-                                data:
-                                    nomor_sep: UJICOBA3
+                                # metadata:
+                                #     method: idrg_procedure_get
+                                # data:
+                                #     nomor_sep: UJICOBA3
+                                nomor_sep: UJICOBA3
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ProcedureData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -527,15 +530,17 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: grouper
-                                    stage: '1'
-                                    grouper: idrg
-                                data:
-                                    nomor_sep: 'UJICOBA5'
+                                # metadata:
+                                #     method: grouper
+                                #     stage: '1'
+                                #     grouper: idrg
+                                # data:
+                                #     nomor_sep: 'UJICOBA5'
+                                nomor_sep: 'UJICOBA5'
+                                stage: '1'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -555,13 +560,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: final_idrg
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: final_idrg
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -581,13 +587,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: reedit_idrg
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: reedit_idrg
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -607,13 +614,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: idrg_to_inacbg_import
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: idrg_to_inacbg_import
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -633,14 +641,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: inacbg_diagnosa_set
-                                    nomor_sep: UJICOBA5
-                                data:
-                                    diagnosa: 'S71.0#A00.1'
+                                # metadata:
+                                #     method: inacbg_diagnosa_set
+                                #     nomor_sep: UJICOBA5
+                                # data:
+                                #     diagnosa: 'S71.0#A00.1'
+                                nomor_sep: UJICOBA5
+                                diagnosa: 'S71.0#A00.1'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -658,22 +668,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: inacbg_diagnosa_get
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: inacbg_diagnosa_get
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/DiagnosaData'
+                    description: OK
                 400:
                     description: Bad Request
 
@@ -691,14 +693,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: inacbg_procedure_set
-                                    nomor_sep: UJICOBA3
-                                data:
-                                    procedure: '88.01#90.090+2#90.090'
+                                # metadata:
+                                #     method: inacbg_procedure_set
+                                #     nomor_sep: UJICOBA3
+                                # data:
+                                #     procedure: '88.01#90.090+2#90.090'
+                                nomor_sep: UJICOBA3
+                                procedure: '88.01#90.090+2#90.090'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -718,22 +722,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: inacbg_procedure_get
-                                data:
-                                    nomor_sep: UJICOBA3
+                                # metadata:
+                                #     method: inacbg_procedure_get
+                                # data:
+                                #     nomor_sep: UJICOBA3
+                                nomor_sep: UJICOBA3
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ProcedureData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -753,15 +749,17 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: grouper
-                                    stage: '1'
-                                    grouper: inacbg
-                                data:
-                                    nomor_sep: 'UJICOBA5'
+                                # metadata:
+                                #     method: grouper
+                                #     stage: '1'
+                                #     grouper: inacbg
+                                # data:
+                                #     nomor_sep: 'UJICOBA5'
+                                nomor_sep: 'UJICOBA5'
+                                stage: '1'
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -781,13 +779,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: final_inacbg
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: final_inacbg
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -807,13 +806,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: reedit_inacbg
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: reedit_inacbg
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -833,14 +833,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: claim_final
-                                data:
-                                    nomor_sep: UJICOBA5
-                                    coder_nik: CODER001
+                                # metadata:
+                                #     method: claim_final
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                #     coder_nik: CODER001
+                                nomor_sep: UJICOBA5
+                                coder_nik: CODER001
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -860,13 +862,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: claim_reedit
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: claim_reedit
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -886,13 +889,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: send_claim_individual
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: send_claim_individual
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -912,25 +916,20 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: send_claim
-                                data:
-                                    start_dt: '2016-01-07'
-                                    stop_dt: '2016-01-07'
-                                    jenis_rawat: '1'
-                                    date_type: '2'
+                                # metadata:
+                                #     method: send_claim
+                                # data:
+                                #     start_dt: '2016-01-07'
+                                #     stop_dt: '2016-01-07'
+                                #     jenis_rawat: '1'
+                                #     date_type: '2'                                   
+                                start_dt: '2016-01-07'
+                                stop_dt: '2016-01-07'
+                                jenis_rawat: '1'
+                                date_type: '2'
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -950,22 +949,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: get_claim_data
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: get_claim_data
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -985,22 +976,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: claim_print
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: claim_print
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -1020,22 +1003,14 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: get_claim_status
-                                data:
-                                    nomor_sep: UJICOBA5
+                                # metadata:
+                                #     method: get_claim_status
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                nomor_sep: UJICOBA5
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -1055,23 +1030,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: retrieve_claim_status
-                                data:
-                                    nomor_sep: 0000005ICC20040018
-                                    nomor_pengajuan: 0000005R47010601
+                                # metadata:
+                                #     method: retrieve_claim_status
+                                # data:
+                                #     nomor_sep: 0000005ICC20040018
+                                #     nomor_pengajuan: 0000005R47010601
+                                nomor_sep: 0000005ICC20040018
+                                nomor_pengajuan: 0000005R47010601
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -1091,14 +1059,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: delete_claim
-                                data:
-                                    nomor_sep: UJICOBA5
-                                    coder_nik: CODER001
+                                # metadata:
+                                #     method: delete_claim
+                                # data:
+                                #     nomor_sep: UJICOBA5
+                                #     coder_nik: CODER001
+                                nomor_sep: UJICOBA5
+                                coder_nik: CODER001
             responses:
                 200:
-                    description: Success
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -1118,23 +1088,16 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: sitb_validate
-                                data:
-                                    nomor_sep: 0001R0016120666662
-                                    nomor_register_sitb: '00000001'
+                                # metadata:
+                                #     method: sitb_validate
+                                # data:
+                                #     nomor_sep: 0001R0016120666662
+                                #     nomor_register_sitb: '00000001'
+                                nomor_sep: 0001R0016120666662
+                                nomor_register_sitb: '00000001'
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
                 400:
                     description: Bad Request
                 401:
@@ -1154,22 +1117,107 @@ paths:
                         schema:
                             type: object
                             example:
-                                metadata:
-                                    method: sitb_invalidate
-                                data:
-                                    nomor_sep: 0001R0016120666662
+                                # metadata:
+                                #     method: sitb_invalidate
+                                # data:
+                                #     nomor_sep: 0001R0016120666662
+                                nomor_sep: 0001R0016120666662
             responses:
                 200:
-                    description: Success
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: '#/components/schemas/SuccessResponse'
-                                    - type: object
-                                      properties:
-                                          data:
-                                              $ref: '#/components/schemas/ClaimData'
+                    description: OK
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /file-upload:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - File
+            summary: File upload
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                nomor_sep:
+                                    type: string
+                                    format: string
+                                    example: '0000005ICC20040001'
+                                file_class:
+                                    type: string
+                                    format: string
+                                    example: 'resume_medis'
+                                file:
+                                    type: string
+                                    format: binary
+                            required:
+                                - nomor_sep
+                                - file_class
+                                - file
+            responses:
+                200:
+                    description: OK
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /file-remove:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - File
+            summary: File remove
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                # metadata:
+                                #     method: file_delete
+                                # data:
+                                #     nomor_sep: 0001R0016120666662
+                                #     file_id: '1'
+                                nomor_sep: 0001R0016120666662
+                                file_id: '1'
+            responses:
+                200:
+                    description: OK
+                400:
+                    description: Bad Request
+                401:
+                    description: Unauthorized
+
+    /file-get:
+        post:
+            security:
+                - JWT: []
+            tags:
+                - File
+            summary: File list
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            example:
+                                # metadata:
+                                #     method: file_get
+                                # data:
+                                #     nomor_sep: 0001R0016120666662
+                                nomor_sep: 0001R0016120666662
+            responses:
+                200:
+                    description: OK
                 400:
                     description: Bad Request
                 401:

@@ -3,6 +3,7 @@ const qs = require('qs');
 const bodyParser = require('body-parser');
 const http = require('http');
 const helmet = require('helmet');
+const fileUpload = require('express-fileupload');
 const { NODE_ENV, PATH_API } = require('./app.constant');
 const cors = require('cors');
 const {
@@ -40,6 +41,11 @@ class App extends Application {
         this.use(bodyParser.urlencoded({ extended: true }));
         this.use(cors(corsOption));
         this.use(logActivity);
+        this.use(
+            fileUpload({
+                debug: false
+            })
+        );
         this.use(
             helmet({
                 contentSecurityPolicy: false,

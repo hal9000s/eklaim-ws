@@ -1,7 +1,7 @@
 const { Router } = require('baskom');
 const { body, param } = require('express-validator');
 const { authenticate } = require('../../middlewares/AuthMiddleware');
-const { generateValidator } = require('../../helpers/utils');
+const { generateValidator, checkMultipart } = require('../../helpers/utils');
 const Service = require('./EklaimServices');
 
 const service = new Service();
@@ -100,6 +100,16 @@ const sITBValidator = [
 const covidClaimValidator = [
     body('nomor_sep').isString(),
     body('nomor_pengajuan').isString(),
+    generateValidator
+];
+const fileUploadValidator = [
+    body('nomor_sep').isString(),
+    body('file_class').isString(),
+    generateValidator
+];
+const removeFileValidator = [
+    body('nomor_sep').isString(),
+    body('file_id').isString(),
     generateValidator
 ];
 
@@ -362,6 +372,32 @@ class EklaimController extends Router {
             authenticate,
             ...noSEPValidator,
             (req, res) => service.sITBInvalidate(req, res)
+        );
+
+        // ========================================================
+        // FILES ROUTES
+        // ========================================================
+
+        this.post(
+            '/file-upload',
+            authenticate,
+            checkMultipart,
+            ...fileUploadValidator,
+            (req, res) => service.fileUpload(req, res)
+        );
+
+        this.post(
+            '/file-delete',
+            authenticate,
+            ...removeFileValidator,
+            (req, res) => service.fileDelete(req, res)
+        );
+
+        this.post(
+            '/file-get',
+            authenticate,
+            ...noSEPValidator,
+            (req, res) => service.fileGet(req, res)
         );
     }
 }

@@ -3,6 +3,7 @@ const eklaim_resp = require('../../helpers/eKlaimResp');
 const { inacbgEncrypt } = require('../../helpers/utils');
 const resp = require('../../helpers/response');
 const { StatusCodes } = require('http-status-codes');
+const { DOCUMENT_ALLOWED_EXTENSIONS } = require('../../app.constant');
 
 const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 
@@ -730,6 +731,83 @@ class EklaimServices {
         const payload = {
             metadata: {
                 method: 'sitb_invalidate'
+            },
+            data: {
+                nomor_sep: nomor_sep
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    // ========================================================
+    // FILES SERVICES
+    // ========================================================
+
+    /*==================== File Upload ====================*/
+    async fileUpload(req, res) {
+        const { nomor_sep, file_class } = req.body;
+
+        if (!req.files || !req.files.file) {
+            return resp(res, StatusCodes.BAD_REQUEST, 'File is required');
+        }
+        if (!DOCUMENT_ALLOWED_EXTENSIONS.includes(req.files.file.mimetype)) {
+            return resp(res, StatusCodes.BAD_REQUEST, 'Invalid file type');
+        }
+
+        const file = req.files.file.data.toString('base64');
+        const payload = {
+            metadata: {
+                method: 'file_upload',
+                nomor_sep: nomor_sep,
+                file_class: file_class,
+                file_name: req.files.file.name
+            },
+            data: file
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== File Delete ====================*/
+    async fileDelete(req, res) {
+        const { nomor_sep, file_id } = req.body;
+
+        const payload = {
+            metadata: {
+                method: 'file_delete'
+            },
+            data: {
+                nomor_sep: nomor_sep,
+                file_id: file_id
+            }
+        };
+
+        try {
+            let response = await eKlaim().post('', inacbgEncrypt(payload));
+            return eklaim_resp(req, res, response);
+        } catch (error) {
+            return handleEklaimError(res, error);
+        }
+    }
+
+    /*==================== File Get ====================*/
+    async fileGet(req, res) {
+        const { nomor_sep } = req.body;
+
+        const payload = {
+            metadata: {
+                method: 'file_get'
             },
             data: {
                 nomor_sep: nomor_sep

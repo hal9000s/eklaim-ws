@@ -118,3 +118,25 @@ exports.inacbgDecrypt = (data) => {
 
     return decrypted.toString('utf8');
 };
+
+exports.checkMultipart = (req, res, next) => {
+    const contentType = req.headers['content-type'];
+    if (!contentType || !contentType.includes('multipart/form-data')) {
+        logs.warn(
+            'Invalid content type => ' +
+                'method: ' +
+                JSON.stringify(req.method) +
+                ', ' +
+                'path: ' +
+                JSON.stringify(req.path) +
+                ', ' +
+                'params: ' +
+                JSON.stringify(req.params) +
+                ', ' +
+                'body: ' +
+                JSON.stringify(req.body)
+        );
+        return resp(res, StatusCodes.BAD_REQUEST, 'Invalid content type');
+    }
+    next();
+};
