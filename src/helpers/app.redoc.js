@@ -1,12 +1,36 @@
 const generateRedocHTML = (apiSpec, options = {}) => {
     const displayApiSpec = JSON.parse(JSON.stringify(apiSpec));
 
+    if (
+        displayApiSpec.components &&
+        displayApiSpec.components.securitySchemes
+    ) {
+        delete displayApiSpec.components.securitySchemes;
+    }
+
+    if (displayApiSpec.security) {
+        delete displayApiSpec.security;
+    }
+
+    if (displayApiSpec.paths) {
+        Object.keys(displayApiSpec.paths).forEach((path) => {
+            Object.keys(displayApiSpec.paths[path]).forEach((method) => {
+                if (
+                    displayApiSpec.paths[path][method] &&
+                    displayApiSpec.paths[path][method].security
+                ) {
+                    delete displayApiSpec.paths[path][method].security;
+                }
+            });
+        });
+    }
+
     const defaultOptions = {
         theme: {
             colors: { primary: { main: '#1976d2' } }
         },
         noAutoAuth: true,
-        hideDownloadButton: false,
+        hideDownloadButton: true,
         ...options
     };
 
