@@ -14,8 +14,8 @@ module.exports = {
                 'temp',
                 'dist'
             ],
-            instances: 1,
-            exec_mode: 'fork',
+            instances: isDev ? 1 : 6,
+            exec_mode: 'cluster',
             watch: isDev ? true : false,
             max_memory_restart: '2048M',
             exp_backoff_restart_delay: 100,
