@@ -13,7 +13,8 @@ const {
 const { logActivity } = require('./helpers/utils');
 const HomeController = require('./api/home/HomeController');
 const createRoutes = require('./app.routes');
-const appSwagger = require('./app.swagger');
+const appSwagger = require('../src/docs/app.swagger');
+const appRedoc = require('../src/docs/app.redoc');
 
 const config = {
     useParseQueryString: qs.parse,
@@ -69,6 +70,7 @@ class App extends Application {
         this.use(ErrorMiddleware(this));
         this.use(NotFoundRouteErrorMiddleware(this));
         appSwagger(this);
+        appRedoc(this);
     }
 
     start(port, cb) {

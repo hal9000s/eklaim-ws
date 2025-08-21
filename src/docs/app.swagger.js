@@ -1,7 +1,7 @@
 const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('./helpers/swagger-ui');
-const { basicAuth } = require('./middlewares/AuthMiddleware');
-const { NODE_ENV } = require('../src/app.constant');
+const swaggerUi = require('../helpers/swagger-ui');
+const { basicAuth } = require('../middlewares/AuthMiddleware');
+const { NODE_ENV } = require('../app.constant');
 
 const appSwagger = (app) => {
     var swaggerOptions = {
