@@ -1,5 +1,19 @@
+const os = require('os');
 require('dotenv').config();
 
+const getIp = () => {
+    const networkInterfaces = os.networkInterfaces();
+    for (const interfaceName in networkInterfaces) {
+        const interfaces = networkInterfaces[interfaceName];
+        for (const iface of interfaces) {
+            if (!iface.internal && iface.family === 'IPv4') {
+                return iface.address;
+            }
+        }
+    }
+    return '127.0.0.1';
+};
+exports.getIp = getIp;
 exports.EKLAIM_URI = process.env.EKLAIM_URI;
 exports.EKLAIM_ENCRYPTION_KEY = process.env.EKLAIM_ENCRYPTION_KEY;
 exports.EKLAIM_DEBUG = process.env.EKLAIM_DEBUG;
@@ -13,8 +27,7 @@ exports.DOCUMENT_ALLOWED_EXTENSIONS = [
     'image/jpeg'
 ];
 exports.ALLOWED_HOST = [
-    `127.0.0.1:${process.env.NODE_PORT}`,
-    `localhost:${process.env.NODE_PORT}`,
+    `${getIp()}:${process.env.NODE_PORT}`,
     'eklaim.rsudmajalengka.co.id',
     'eklaim.rsudmajalengka.my.id'
 ];
